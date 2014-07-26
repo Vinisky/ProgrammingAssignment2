@@ -1,0 +1,44 @@
+makeCacheMatrix <- function(x = matrix()) #The function creates a special matrix#
+  {
+  m<-NULL
+  set<-function(y){
+    x<<-y
+    m<<-NULL
+  }
+  get<-function() x
+  setmatrix<-function(solve) m<<- solve
+  getmatrix<-function() m
+  list(set=set, get=get,
+       setmatrix=setmatrix,
+       getmatrix=getmatrix)
+}
+
+cacheSolve <- function(x=matrix(), ...) #The function calculates the inverseMatrix. However, it first checks to see if the inverseMatrix has already been calculated. If so, it gets the inverseMatrix from the cache and skips the computation. Otherwise, it calculates it and sets the value in the cache via the setmatrix function.
+  {
+  m<-x$getmatrix()
+  if(!is.null(m)){
+    message("getting cached data")
+    return(m)
+  }
+  
+  matrix<-x$get()
+  m<-solve(matrix, ...)
+  x$setmatrix(m)
+  m
+}
+
+v1 <- c(1,2,3)
+v2 <- c(0, 1, 5)
+v3 <- c(5,6,0)
+mat <- rbind(v1, v2, v3)
+mat  #  A simple Matrix is created
+
+solve(mat) # the inverse is returned
+
+mat2<-makeCacheMatrix(mat)
+mat2$get()
+mat2$getmatrix()
+cacheSolve(mat2)  #The function finds the inverse Matrix#
+mat2$getmatrix()  #  The inversMatrix is already stored 
+cacheSolve(mat2) #Return a matrix that is the inverse of 'x'.The inverseMatrix has been already calculated and stored.#
+                #There is no need to recalculate it again#
